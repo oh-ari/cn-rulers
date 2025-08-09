@@ -1,11 +1,9 @@
 // ==UserScript==
 // @name         CN Rulers [Alliance Display]
-// @namespace    https://github.com/austin/cn-rulers
 // @version      1.0
 // @author       Ari / Mochi
-// @description  Adds a "Ruler Name" column to the alliance members table by matching nation names to the daily CSV dataset.
+// @description  Adds 'Ruler Name' to the alliance view, connected to daily CSV data.
 // @match        https://www.cybernations.net/alliance_display.asp*
-// @match        http://www.cybernations.net/alliance_display.asp*
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // @connect      raw.githubusercontent.com
