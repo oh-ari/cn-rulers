@@ -7,6 +7,8 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM.xmlHttpRequest
 // @connect      raw.githubusercontent.com
+// @update       https://github.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
+// @download     https://github.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
 // @run-at       document-end
 // ==/UserScript==
 
