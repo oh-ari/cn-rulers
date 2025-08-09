@@ -1,56 +1,18 @@
 // ==UserScript==
 // @name         CN Rulers [Alliance Display]
-// @version      1.0
+// @version      1.1
 // @author       Ari / Mochi
-// @description  Adds 'Ruler Name' to the alliance view, connected to daily CSV data.
+// @description  Adds 'Ruler Name' to the alliance view using on-page data.
 // @match        https://www.cybernations.net/alliance_display.asp*
-// @grant        GM_xmlhttpRequest
-// @grant        GM.xmlHttpRequest
-// @connect      raw.githubusercontent.com
+// @grant        none
 // @run-at       document-end
 // ==/UserScript==
 
 (function () {
   'use strict';
 
-  const CSV_URL = 'https://raw.githubusercontent.com/oh-ari/oh-ari.github.io/refs/heads/main/daily/CN_Nation_Stats.csv';
-  const gmRequest = (typeof GM !== 'undefined' && GM && GM.xmlHttpRequest) ? GM.xmlHttpRequest : (typeof GM_xmlhttpRequest !== 'undefined' ? GM_xmlhttpRequest : null);
-
   function normalize(text) {
     return (text || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function fetchCsv(url) {
-    return new Promise((resolve, reject) => {
-      if (gmRequest) {
-        try {
-          gmRequest({ method: 'GET', url, headers: { Accept: 'text/plain' }, onload: (res) => resolve(res.responseText), onerror: reject, ontimeout: () => reject(new Error('CSV fetch timed out')) });
-        } catch (e) {
-          reject(e);
-        }
-      } else {
-        fetch(url, { credentials: 'omit' })
-          .then((r) => { if (!r.ok) throw new Error(`Failed to fetch CSV: ${r.status}`); return r.text(); })
-          .then(resolve, reject);
-      }
-    });
-  }
-
-  function parseRulerMap(csvText) {
-    const map = new Map();
-    if (!csvText) return map;
-    const lines = csvText.split(/\r?\n/);
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (!line || line.startsWith('Nation ID|')) continue;
-      const parts = line.split('|');
-      if (parts.length < 3) continue;
-      const rulerName = normalize(parts[1]);
-      const nationName = normalize(parts[2]);
-      if (!nationName) continue;
-      map.set(nationName, rulerName);
-    }
-    return map;
   }
 
   function getMembersTable() {
@@ -132,7 +94,7 @@
     return null;
   }
 
-  function addRulerCells(tableElement, nationToRulerMap) {
+  function addRulerCells(tableElement) {
     const rows = Array.from(tableElement.querySelectorAll('tr'));
     if (rows.length === 0) return;
     for (let i = 1; i < rows.length; i++) {
@@ -142,16 +104,15 @@
       const nationName = normalize(nationLink.textContent);
       const nationCell = nationLink.closest('td');
       if (!nationCell) continue;
-      const rulerFromCsv = nationToRulerMap.get(nationName) || '';
-      const rulerFallback = rulerFromCsv || getRulerFromRow(row);
+      const rulerName = getRulerFromRow(row) || '';
       const rulerCell = document.createElement('td');
       const container = document.createElement('div');
       container.style.width = '150px';
       container.style.overflowX = 'hidden';
       const rulerAnchor = document.createElement('a');
       rulerAnchor.href = nationLink.href;
-      rulerAnchor.textContent = rulerFallback || '';
-      if (rulerFallback) rulerAnchor.title = `Ruler: ${rulerFallback}`;
+      rulerAnchor.textContent = rulerName;
+      if (rulerName) rulerAnchor.title = `Ruler: ${rulerName}`;
       container.appendChild(rulerAnchor);
       const statusCell = getStatusCell(row, nationCell);
       if (statusCell) {
@@ -167,18 +128,12 @@
     }
   }
 
-  async function applyRulerColumn() {
+  function applyRulerColumn() {
     const table = getMembersTable();
     if (!table) return;
     shiftLeaderInfo(12);
     insertRulerHeader(table);
-    try {
-      const csvText = await fetchCsv(CSV_URL);
-      const nationToRuler = parseRulerMap(csvText);
-      addRulerCells(table, nationToRuler);
-    } catch (_) {
-      addRulerCells(table, new Map());
-    }
+    addRulerCells(table);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyRulerColumn); else applyRulerColumn();
