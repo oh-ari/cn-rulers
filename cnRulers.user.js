@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CN Rulers [Alliance Display]
-// @version      1.1
+// @version      1.2
 // @author       Ari / Mochi
 // @description  Adds 'Ruler Name' to the alliance view using on-page data.
 // @match        https://www.cybernations.net/alliance_display.asp*
@@ -109,8 +109,10 @@
       const rulerName = getRulerFromRow(row) || '';
       const rulerCell = document.createElement('td');
       const container = document.createElement('div');
-      container.style.width = '150px';
-      container.style.overflowX = 'hidden';
+      container.style.width = '180px';
+      container.style.overflow = 'hidden';
+      container.style.textOverflow = 'ellipsis';
+      container.style.whiteSpace = 'nowrap';
       const rulerAnchor = document.createElement('a');
       rulerAnchor.href = nationLink.href;
       rulerAnchor.textContent = rulerName;
@@ -119,10 +121,10 @@
       const statusCell = getStatusCell(row, nationCell);
       if (statusCell) {
         const iconsWrapper = document.createElement('span');
-        iconsWrapper.style.marginLeft = '6px';
+        iconsWrapper.style.marginRight = '6px';
         iconsWrapper.style.whiteSpace = 'nowrap';
         while (statusCell.firstChild) iconsWrapper.appendChild(statusCell.firstChild);
-        container.appendChild(iconsWrapper);
+        container.insertBefore(iconsWrapper, container.firstChild);
         statusCell.remove();
       }
       rulerCell.appendChild(container);
