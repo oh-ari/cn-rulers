@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         CN Rulers [Alliance Display]
-// @version      1.2
+// @version      1.2b
 // @author       Ari / Mochi
 // @description  Adds 'Ruler Name' to the alliance view using on-page data.
 // @match        https://www.cybernations.net/alliance_display.asp*
 // @grant        none
-// @updateURL    https://github.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
-// @downloadURL  https://github.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
+// @updateURL    https://raw.githubusercontent.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
+// @downloadURL  https://raw.githubusercontent.com/oh-ari/cn-rulers/raw/refs/heads/main/cnRulers.user.js
 // @run-at       document-end
 // ==/UserScript==
 
